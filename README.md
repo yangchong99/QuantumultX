@@ -1,2 +1,2 @@
 # QuantumultX
-QuantumultX配置文件 
+QuantumultX 自用配置文件 
