@@ -12,10 +12,10 @@
 - 登录网站后点击个人设置，进入设置页面即可获取token
 - 可在boxjs设置是否领取随机鸡腿，默认固定鸡腿。考虑到严格的审核机制，脚本仅有签到功能。
 
-[Script]
-http-response ^https:\/\/www\.nodeseek\.com\/api\/account\/getInfo\/(.+)phone=1 script-path=https://gist.githubusercontent.com/Sliverkiss/2b5acc2c4960dd06618c6912302c2c7f/raw/nodeseek.js, requires-body=true, timeout=60, tag=NodeSeek获取token
+[rewrite_local]
+^https:\/\/www\.nodeseek\.com\/api\/account\/getInfo\/(.+)phone=1 url script-response-body https://gist.githubusercontent.com/Sliverkiss/2b5acc2c4960dd06618c6912302c2c7f/raw/nodeseek.js
 
-[MITM]
+[mitm]
 hostname = www.nodeseek.com
 
 ⚠️【免责声明】
