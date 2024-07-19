@@ -1,12 +1,3 @@
-/*
-[task_local]
-# 云闪付签到
-59 15 8 * * * script-path=https://你存放脚本的地址/YSF_SignIn.js, tag=云闪付签到
-*/
-
-const $task = env.isNode ? require('axios') : $task;
-const $notify = env.isNode ? require('./sendNotify') : $notify;
-
 const YSF_TOKEN = $prefs.valueForKey("YSF_TOKEN");
 const YSF_COOKIE = $prefs.valueForKey("YSF_COOKIE");
 
