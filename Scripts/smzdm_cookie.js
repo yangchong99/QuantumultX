@@ -1,4 +1,6 @@
 // Quantumult X 持久化抓smzdm_cookie脚本
+// author: yangchong99
+// update-time: 2025-07-27 15:23:14
 
 if ($request && $request.url.match(/^https?:\/\/user-api\.smzdm\.com\/checkin$/)) {
   const cookie = $request.headers.Cookie || $request.headers.cookie;
