@@ -12,7 +12,7 @@
 
 [rewrite_local]
 
-^https?:\/\/buy\.itunes\.apple\.com\/verifyReceipt url script-response-body buy域自动解锁.js
+^https?:\/\/buy\.itunes\.apple\.com\/verifyReceipt url script-response-body https://raw.githubusercontent.com/yangchong99/QuantumultX/main/Rewrite/Function/BuyUnlock.js
 
 [mitm] 
 
