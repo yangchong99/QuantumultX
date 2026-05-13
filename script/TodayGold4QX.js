@@ -57,32 +57,6 @@ function parseShopRealtime(html) {
   return out;
 }
 
-function parseShopAvg30(html) {
-  const out = {};
-  for (let i = 0; i < SHOPS.length; i++) {
-    const name = SHOPS[i];
-    const encoded = name
-      .split("")
-      .map((ch) => "\\u" + ch.charCodeAt(0).toString(16).padStart(4, "0"))
-      .join("");
-    const re = new RegExp(
-      '"name":"' + encoded + '","series":\\[([\\s\\S]*?)\\]\\}',
-    );
-    const mm = html.match(re);
-    if (!mm || !mm[1]) continue;
-    const vals = [];
-    const vr = /"value":(null|[\d.]+)/g;
-    let vm;
-    while ((vm = vr.exec(mm[1])) !== null) {
-      const v = toNum(vm[1]);
-      if (v !== null) vals.push(v);
-    }
-    const a = avg(vals);
-    if (a !== null) out[name] = round2(a);
-  }
-  return out;
-}
-
 function parseMarketsCnyPerGram(html) {
   const out = {};
   for (let i = 0; i < MARKETS.length; i++) {
@@ -152,14 +126,6 @@ async function fetchIntlGoldAvg30Cny(usdcnh) {
   }
 }
 
-function marketShortName(n) {
-  if (n === "国际黄金现货") return "国际黄金";
-  if (n === "国际白银现货") return "国际白银";
-  if (n === "上海黄金现货") return "上海黄金";
-  if (n === "上海白银现货") return "上海白银";
-  return n;
-}
-
 (async () => {
   try {
     $.log("开始获取贵金属网页数据...");
@@ -174,12 +140,11 @@ function marketShortName(n) {
     });
 
     if (!html || html.length < 500) {
-      $.notify("今日金银看板", "", "获取页面内容失败或为空");
+      $.notify("今日金银看板", "获取失败", "页面内容为空或过短");
       return;
     }
 
     const shopRt = parseShopRealtime(html);
-    const shopAvg = parseShopAvg30(html);
     const markets = parseMarketsCnyPerGram(html);
     const updateTime = parseUpdate(html);
 
@@ -231,7 +196,11 @@ function marketShortName(n) {
 function httpGet(options) {
   return new Promise((resolve, reject) => {
     $task.fetch(options).then(resp => {
-      resolve(resp.body);
+      if (resp.statusCode >= 400) {
+        reject(new Error(`HTTP ${resp.statusCode}`));
+      } else {
+        resolve(resp.body);
+      }
     }, err => {
       reject(err);
     });
@@ -244,7 +213,8 @@ function Env(name) {
   this.log = (msg) => console.log(`[${this.name}] ${msg}`);
   this.notify = (title, subtitle, message, url) => {
     if (typeof $notify !== "undefined") {
-      $notify(title, subtitle, message, { "open-url": url });
+      const options = url ? { "open-url": url } : {};
+      $notify(title, subtitle, message, options);
     } else if (typeof $notification !== "undefined") {
       let attach = url ? { openUrl: url } : null;
       $notification.post(title, subtitle, message, attach);
